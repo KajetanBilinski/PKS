@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using PKS;
 
 public class Program
@@ -18,8 +19,10 @@ public class Program
 
         builder.Services.AddDbContext<PKSContext>(options =>
         {
+            options.UseLazyLoadingProxies();
             options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
         });
+        
         var app = builder.Build();
         
 
