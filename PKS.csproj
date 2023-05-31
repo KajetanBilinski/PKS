@@ -18,10 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\DTO\Stop\" />
-    <Folder Include="Models\DTO\RouteStop\" />
-    <Folder Include="Models\DTO\Route\" />
-    <Folder Include="Models\DTO\Passenger\" />
+    <Folder Include="Models\DTO\Discount\" />
     <Folder Include="Repositories\Interfaces\" />
     <Folder Include="Repositories\Implementations\" />
   </ItemGroup>

@@ -16,6 +16,7 @@ public class PKSContext : DbContext
     public DbSet<Stop> Stop { get; set; }
     public DbSet<RouteStop> RouteStop { get; set; }
     public DbSet<Bus> Bus { get; set; }
+    public DbSet<Discount> Discount { get; set; }
     public PKSContext(DbContextOptions opt)
         : base(opt)
     {
@@ -32,6 +33,7 @@ public class PKSContext : DbContext
         modelBuilder.ApplyConfiguration(new RouteStopEfConfiguration());
         modelBuilder.ApplyConfiguration(new StopEfConfiguration());
         modelBuilder.ApplyConfiguration(new TicketEfConfiguration());
+        modelBuilder.ApplyConfiguration(new DiscountEfConfiguration());
     }
 
 

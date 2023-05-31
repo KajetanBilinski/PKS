@@ -1,5 +1,5 @@
 -- Created by Vertabelo (http://vertabelo.com)
--- Last modification date: 2023-05-27 17:10:39.612
+-- Last modification date: 2023-05-31 00:04:03.177
 
 -- tables
 -- Table: Bus
@@ -29,6 +29,14 @@ CREATE TABLE BusType (
     CONSTRAINT BusType_pk PRIMARY KEY  (idBusType)
 );
 
+-- Table: Discount
+CREATE TABLE Discount (
+    idDiscount int  NOT NULL,
+    Discount decimal(5,2)  NOT NULL,
+    Name varchar(150)  NOT NULL,
+    CONSTRAINT Discount_pk PRIMARY KEY  (idDiscount)
+);
+
 -- Table: Passenger
 CREATE TABLE Passenger (
     idPassenger int  NOT NULL,
@@ -44,7 +52,8 @@ CREATE TABLE Passenger (
 CREATE TABLE Route (
     idRoute int  NOT NULL,
     RouteName varchar(50)  NOT NULL,
-    Distance int  NOT NULL,
+    Distance decimal(6,2)  NOT NULL,
+    Cost decimal(6,2)  NOT NULL,
     CONSTRAINT Route_pk PRIMARY KEY  (idRoute)
 );
 
@@ -68,12 +77,14 @@ CREATE TABLE Stop (
 -- Table: Ticket
 CREATE TABLE Ticket (
     idTicket int  NOT NULL,
-    Cost decimal(6,2)  NOT NULL,
-    CreatedAt datetime  NOT NULL,
+    ValidFrom datetime  NOT NULL,
+    ValidTo datetime  NOT NULL,
+    Validated bit  NOT NULL,
     SeatNumber varchar(5)  NOT NULL,
     idBus int  NOT NULL,
     idRoute int  NOT NULL,
     idPassenger int  NOT NULL,
+    idDiscount int  NOT NULL,
     CONSTRAINT Ticket_pk PRIMARY KEY  (idTicket)
 );
 
@@ -102,6 +113,11 @@ ALTER TABLE RouteStop ADD CONSTRAINT RouteStop_Stop
 ALTER TABLE Ticket ADD CONSTRAINT Ticket_Bus
     FOREIGN KEY (idBus)
     REFERENCES Bus (idBus);
+
+-- Reference: Ticket_Discount (table: Ticket)
+ALTER TABLE Ticket ADD CONSTRAINT Ticket_Discount
+    FOREIGN KEY (idDiscount)
+    REFERENCES Discount (idDiscount);
 
 -- Reference: Ticket_Passenger (table: Ticket)
 ALTER TABLE Ticket ADD CONSTRAINT Ticket_Passenger

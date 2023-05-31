@@ -10,7 +10,6 @@ namespace PKS.Models.DBModels
         public int Age { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
-        [JsonIgnore]
         public virtual ICollection<Ticket> NavigationTickets { get; set; }
 
     }
