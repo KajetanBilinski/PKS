@@ -13,6 +13,5 @@ namespace PKS.Models.DTO.Bus
         public BusSchemaSelectDTO Schema { get; set; }   
         public BusTypeSelectDTO Type { get; set; }
 
-        public List<TicketSelectDTO> Tickets { get; set; }
     }
 }
