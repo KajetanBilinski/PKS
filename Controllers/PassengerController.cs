@@ -1,14 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using PKS.Models.DBModels;
 using PKS.Models.DTO.Bus;
 using PKS.Models.DTO.BusSchema;
 using PKS.Models.DTO.BusType;
+using PKS.Models.DTO.Passenger;
 using PKS.Models.DTO.Ticket;
 
 namespace PKS.Controllers
 {
     [ApiController]
-    [Route("passenger")]
+    [Route("api/passenger")]
     public class PassengerController : ControllerBase
     {
         private readonly PKSContext pks;
@@ -21,38 +24,38 @@ namespace PKS.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPassengers()
         {
-            var bus = pks.Bus.ToList()[0];
-            List<TicketSelectDTO> tickets = new List<TicketSelectDTO>();
-            foreach (var ticket in bus.NavigationTickets) 
+            List<PassengerSelectDTO> passengers = new List<PassengerSelectDTO>(); 
+            foreach(Passenger passenger in await pks.Passenger.ToListAsync())
             {
-                tickets.Add(new TicketSelectDTO()
+                List<TicketSelectDTO> tickets = new List<TicketSelectDTO>();
+                foreach (Ticket ticket in passenger.NavigationTickets!)
                 {
-                    Cost= ticket.Cost,
-                    CreatedAt=ticket.CreatedAt,
-                    SeatNumber=ticket.SeatNumber,
-                    FirstName=ticket.NavigationPassenger.Firstname,
-                    LastName=ticket.NavigationPassenger.LastName,
-                    Email=ticket.NavigationPassenger.Email,
-                });
+                    dynamic cost = 0;
+                    if (ticket.NavigationDiscount is not null)
+                        cost = ticket.NavigationRoute.Cost - ticket.NavigationRoute.Cost * (ticket.NavigationDiscount.DiscountValue / 100);
+                    tickets.Add(new TicketSelectDTO()
+                    {
+                        Cost = cost,
+                        Validated = ticket.Validated,
+                        ValidFrom = ticket.ValidFrom,
+                        ValidTo = ticket.ValidTo,
+                        SeatNumber = ticket.SeatNumber,
+                        RouteName = ticket.NavigationRoute.RouteName,
+                        Distance = ticket.NavigationRoute.Distance,
+                        DiscountName = ticket.NavigationDiscount is null?"Brak":ticket.NavigationDiscount.Name
+                    }) ;
+                }
+                passengers.Add(new PassengerSelectDTO()
+                {
+                    PhoneNumber = passenger.PhoneNumber,
+                    Firstname = passenger.Firstname,
+                    LastName = passenger.LastName,
+                    Email = passenger.Email,
+                    Age = passenger.Age,
+                    Tickets = tickets
+                });               
             }
-            var b = new BusSelectDTO()
-            {
-                Capacity = bus.Capacity,
-                Registration = bus.Registration,
-                Schema = new BusSchemaSelectDTO()
-                {
-                    Filename = bus.NavigationBusSchema.Filename
-                },
-                Type = new BusTypeSelectDTO()
-                {
-                    Made = bus.NavigationBusType.Made,
-                    Version = bus.NavigationBusType.Version,
-                    Engine = bus.NavigationBusType.Engine,
-                    Year = bus.NavigationBusType.Year,
-                },
-                Tickets = tickets
-            };
-            return Ok(b);
+            return Ok(passengers);
         }
     }
 }

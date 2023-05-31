@@ -4,12 +4,12 @@ using PKS.Models.DBModels;
 namespace PKS.Controllers
 {
     [ApiController]
-    [Route("api")]
-    public class TestController : ControllerBase
+    [Route("api/ticket")]
+    public class TicketController : ControllerBase
     {
 
         public readonly PKSContext pks;
-        public TestController(PKSContext pks)
+        public TicketController(PKSContext pks)
         {
             this.pks = pks;
             
