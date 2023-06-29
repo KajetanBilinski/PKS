@@ -9,6 +9,7 @@ namespace PKS.Configurations
         public void Configure(EntityTypeBuilder<BusType> builder)
         {
             builder.HasKey(e => e.idBusType).HasName("BusType_pk");
+            builder.Property(e => e.idBusType).HasColumnType("int").UseIdentityColumn();
             builder.Property(e => e.Made).HasColumnType("string");
             builder.Property(e => e.Version).HasColumnType("string");
             builder.Property(e => e.Engine).HasColumnType("string");

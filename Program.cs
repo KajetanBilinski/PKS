@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Routing;
 using PKS;
+using PKS.Services;
 
 public class Program
 {
@@ -13,6 +14,7 @@ public class Program
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSingleton<IPKSModelValidator,PKSModelValidator>();
         builder.Services.AddSwaggerGen();
 
         builder.Services.AddDbContext<PKSContext>(options =>
