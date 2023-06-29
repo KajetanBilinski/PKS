@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PKS.Models.DBModels;
+using PKS.Models.DTO.Bus;
 using PKS.Models.DTO.BusSchema;
+using PKS.Models.DTO.BusType;
 
 namespace PKS.Controllers
 {
@@ -27,6 +29,25 @@ namespace PKS.Controllers
                 });
             }
             return Ok(busSchemas);
+        }
+
+        [HttpGet("{schemaId}")]
+        public async Task<IActionResult> GetBusSchemaById(int schemaId)
+        {
+            if (schemaId < 0)
+            {
+                return BadRequest("Schema id cannot be less than 0");
+            }
+            var schema = await pks.BusSchema.FirstOrDefaultAsync(b => b.idBusSchema == schemaId);
+            if (schema is null)
+            {
+                return NotFound($"Schema with id: {schemaId} does not exists");
+            }
+            var schemaReturn = new BusSchemaSelectDTO()
+            {
+                Filename= schema.Filename,
+            };
+            return Ok(schemaReturn);
         }
     }
 }

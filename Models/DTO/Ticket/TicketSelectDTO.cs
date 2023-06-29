@@ -9,7 +9,6 @@
         public string SeatNumber { get; set; }
         public string RouteName { get; set; }
         public decimal Distance { get; set; }
-
         public string DiscountName { get; set; }
     }
 }

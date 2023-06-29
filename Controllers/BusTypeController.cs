@@ -17,7 +17,7 @@ namespace PKS.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetBusSchemas()
+        public async Task<IActionResult> GetBusTypes()
         {
             List<BusTypeSelectDTO> busTypes = new List<BusTypeSelectDTO>();
             foreach (BusType busType in await pks.BusType.ToListAsync())
@@ -31,6 +31,27 @@ namespace PKS.Controllers
                 });
             }
             return Ok(busTypes);
+        }
+        [HttpGet("{typeId}")]
+        public async Task<IActionResult> GetBusTypeById(int typeId)
+        {
+            if (typeId < 0)
+            {
+                return BadRequest("BusType id cannot be less than 0");
+            }
+            var type = await pks.BusType.FirstOrDefaultAsync(b => b.idBusType == typeId);
+            if (type is null)
+            {
+                return NotFound($"BusType with id: {typeId} does not exists");
+            }
+            var typeReturn = new BusTypeSelectDTO()
+            {
+                Version= type.Version,
+                Engine= type.Engine,
+                Year= type.Year,
+                Made= type.Made,
+            };
+            return Ok(typeReturn);
         }
     }
 }
