@@ -146,5 +146,96 @@ namespace PKS.Controllers
                     return Ok("Bus added "+(addedBusSchema ? ", BusSchema added ":"")+(addedBusType?", BusType added":""));
             }
         }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateBus(BusAddDTO busAdd)
+        {
+
+            var error = validator.ValidateBusAddDTO(busAdd);
+            if (error != null)
+            {
+                return BadRequest(error);
+            }
+            else if (!await pks.Bus.AnyAsync(b => b.Registration == busAdd.Registration))
+            {
+                return BadRequest($"Bus with this registration {busAdd.Registration} doesn't exists");
+            }
+            else
+            {
+                bool addedBusType = false;
+                bool addedBusSchema = false;
+
+                BusType busType = await pks.BusType.FirstOrDefaultAsync(bt =>
+                busAdd.Type.Engine == bt.Engine &&
+                busAdd.Type.Year == bt.Year &&
+                busAdd.Type.Version == bt.Version &&
+                busAdd.Type.Made == bt.Made);
+                if (busType is null)
+                {
+                    int idBusType = await pks.BusType.CountAsync() > 0 ? await pks.BusType.MaxAsync(bs => bs.idBusType) + 1 : 1;
+                    busType = new BusType()
+                    {
+                        idBusType = idBusType,
+                        Made = busAdd.Type.Made,
+                        Year = busAdd.Type.Year,
+                        Engine = busAdd.Type.Engine,
+                        Version = busAdd.Type.Version,
+                    };
+                    await pks.BusType.AddAsync(busType);
+                    if (await pks.SaveChangesAsync() <= 0)
+                        return StatusCode(505);
+                    addedBusType = true;
+                }
+
+                BusSchema busSchema = await pks.BusSchema.FirstOrDefaultAsync(bs => bs.Filename == busAdd.Schema.Filename);
+                if (busSchema is null)
+                {
+                    int idBusSchema = await pks.BusSchema.CountAsync() > 0 ? await pks.BusSchema.MaxAsync(bs => bs.idBusSchema) + 1 : 1;
+                    busSchema = new BusSchema()
+                    {
+                        idBusSchema = idBusSchema,
+                        Filename = busAdd.Schema.Filename
+                    };
+                    await pks.BusSchema.AddAsync(busSchema);
+                    if (await pks.SaveChangesAsync() <= 0)
+                        return StatusCode(505);
+                    addedBusSchema = true;
+                }
+                var bus = await pks.Bus.FirstOrDefaultAsync(b => b.Registration == busAdd.Registration);
+                bus.Capacity = busAdd.Capacity;
+                bus.Registration = busAdd.Registration;
+                bus.idBusSchema = busSchema.idBusSchema;
+                bus.idBusType = busType.idBusType;
+                if (await pks.SaveChangesAsync() <= 0)
+                    return StatusCode(505);
+                else
+                    return Ok("Bus updated " + (addedBusSchema ? ", BusSchema added " : "") + (addedBusType ? ", BusType added" : ""));
+            }
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteBus(string registration)
+        {
+            if(string.IsNullOrWhiteSpace(registration))
+            {
+                return BadRequest("Registration is null or empty");
+            }
+            else
+            {
+                var bus = await pks.Bus.FirstOrDefaultAsync(b=>b.Registration == registration);
+                if(bus is null)
+                {
+                    return NotFound($"Bus with registration: {registration} doesn't exist");
+                }
+                else
+                {
+                    pks.Bus.Remove(bus);
+                    if (await pks.SaveChangesAsync() <= 0)
+                        return StatusCode(505);
+                    else
+                        return Ok($"Bus with registration: {registration} was deleted");
+                }
+            }
+        }
     }
 }
