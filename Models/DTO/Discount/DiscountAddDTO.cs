@@ -1,6 +1,6 @@
 ﻿namespace PKS.Models.DTO.Discount
 {
-    public class DiscountSelectDTO
+    public class DiscountAddDTO
     {
         public string Name { get; set; }
         public decimal DiscountValue { get; set; }

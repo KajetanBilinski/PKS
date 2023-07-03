@@ -2,6 +2,7 @@
 using PKS.Models.DTO.Bus;
 using PKS.Models.DTO.BusSchema;
 using PKS.Models.DTO.BusType;
+using PKS.Models.DTO.Discount;
 
 namespace PKS.Services
 {
@@ -43,6 +44,19 @@ namespace PKS.Services
                 return "Year cannot be greater than current year";
             else if (busType.Year < 1900)
                 return "Year cannot be less than 1900";
+            return null;
+        }
+
+        public string? ValidateDiscountAddDTO(DiscountAddDTO discount)
+        {
+            if (discount is null)
+                return "Discount is null";
+            else if (string.IsNullOrWhiteSpace(discount.Name))
+                return "Discount name is null or whitespace";
+            else if (discount.DiscountValue <= 0)
+                return "Discount value cannot be less than 0";
+            else if (discount.DiscountValue > 100)
+                return "Discount value cannot be greater than 100";
             return null;
         }
     }
