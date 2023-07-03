@@ -98,11 +98,13 @@ namespace PKS.Controllers
                 busAdd.Type.Year == bt.Year &&
                 busAdd.Type.Version == bt.Version &&
                 busAdd.Type.Made == bt.Made);
+
                 if (busType is null)
                 {
+                    int idBusType = await pks.BusType.CountAsync() > 0 ? await pks.BusType.MaxAsync(bs => bs.idBusType) + 1 : 1;
                     busType = new BusType()
                     {
-                        idBusType = await pks.BusType.MaxAsync(bt => bt.idBusType)+1, // may produce null pointer exception if table is empty
+                        idBusType = idBusType,
                         Made = busAdd.Type.Made,
                         Year = busAdd.Type.Year,
                         Engine = busAdd.Type.Engine,
@@ -113,13 +115,14 @@ namespace PKS.Controllers
                         return StatusCode(505);
                     addedBusType = true;
                 }
-
+                
                 BusSchema busSchema = await pks.BusSchema.FirstOrDefaultAsync(bs => bs.Filename == busAdd.Schema.Filename);
                 if(busSchema is null)
                 {
+                    int idBusSchema = await pks.BusSchema.CountAsync() > 0 ? await pks.BusSchema.MaxAsync(bs => bs.idBusSchema) + 1 : 1;
                     busSchema = new BusSchema()
                     {
-                        idBusSchema = await pks.BusSchema.MaxAsync(bs => bs.idBusSchema) + 1, // may produce null pointer exception if table is empty
+                        idBusSchema = idBusSchema,
                         Filename = busAdd.Schema.Filename
                     };
                     await pks.BusSchema.AddAsync(busSchema);
@@ -127,10 +130,10 @@ namespace PKS.Controllers
                         return StatusCode(505);
                     addedBusSchema = true;
                 }
-                
+                int idBus = await pks.Bus.CountAsync() > 0 ? await pks.Bus.MaxAsync(bs => bs.idBus) + 1 : 1;
                 Bus bus = new Bus()
                 {
-                    idBus = await pks.Bus.MaxAsync(bs => bs.idBus) + 1, // may produce null pointer exception if table is empty
+                    idBus = idBus,
                     idBusSchema = busSchema.idBusSchema,
                     idBusType = busType.idBusType,
                     Capacity = busAdd.Capacity,
