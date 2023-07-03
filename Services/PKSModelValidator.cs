@@ -1,10 +1,12 @@
-﻿using PKS.Models.DTO.Bus;
+﻿using PKS.Models.DBModels;
+using PKS.Models.DTO.Bus;
+using PKS.Models.DTO.BusSchema;
 
 namespace PKS.Services
 {
     public class PKSModelValidator : IPKSModelValidator
     {
-        public string ValidateBusAddDTO(BusAddDTO bus)
+        public string? ValidateBusAddDTO(BusAddDTO bus)
         {
             if (bus == null)
                 return "Bus is null";
@@ -14,6 +16,15 @@ namespace PKS.Services
                 return "Year cannot be greater than current year";
             else if (bus.Type.Year < 1900)
                 return "Year cannot be less than 1900";
+            return null;
+        }
+
+        public string? ValidateBusSchemaAddDTO(BusSchemaAddDTO busSchema)
+        {
+            if (busSchema is null)
+                return "BusSchema is null";
+            else if (string.IsNullOrEmpty(busSchema.Filename))
+                return "BusSchema filename is null or empty";
             return null;
         }
     }
