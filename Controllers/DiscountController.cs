@@ -67,7 +67,7 @@ namespace PKS.Controllers
             }
             else
             {
-                int idDiscount = await pks.Discount.CountAsync() > 0 ? await pks.Discount.MaxAsync(bs => bs.IdDiscount) + 1 : 1;
+                int idDiscount = await pks.Discount.CountAsync() > 0 ? await pks.Discount.MaxAsync(d => d.IdDiscount) + 1 : 1;
                 var discount = new Discount()
                 {
                     IdDiscount = idDiscount,

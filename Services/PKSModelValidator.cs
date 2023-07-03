@@ -3,6 +3,7 @@ using PKS.Models.DTO.Bus;
 using PKS.Models.DTO.BusSchema;
 using PKS.Models.DTO.BusType;
 using PKS.Models.DTO.Discount;
+using PKS.Models.DTO.Passenger;
 
 namespace PKS.Services
 {
@@ -57,6 +58,27 @@ namespace PKS.Services
                 return "Discount value cannot be less than 0";
             else if (discount.DiscountValue > 100)
                 return "Discount value cannot be greater than 100";
+            return null;
+        }
+
+        public string? ValidatePassengerAddDTO(PassengerAddDTO passenger)
+        {
+            if (passenger is null)
+                return "Passenger is null";
+            else if (string.IsNullOrWhiteSpace(passenger.Firstname))
+                return "Firstname is null or whitespace";
+            else if (passenger.Firstname.Any(char.IsDigit))
+                return "Firstname cannot contain digit";
+            else if (string.IsNullOrWhiteSpace(passenger.LastName))
+                return "LastName is null or whitespace";
+            else if (passenger.LastName.Any(char.IsDigit))
+                return "LastName cannot contain digit";
+            else if (passenger.Age < 0 || passenger.Age > 130)
+                return "Age cannot be less than 0 or greater than 130";
+            else if (passenger.PhoneNumber.Any(char.IsLetter))
+                return "Phone number cannot contain letter";
+            else if (passenger.Email.Contains("@"))
+                return "Email doesn't have @";
             return null;
         }
     }

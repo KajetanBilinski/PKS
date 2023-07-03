@@ -72,7 +72,7 @@ namespace PKS.Controllers
             }
             else
             {
-                int idBusType = await pks.BusType.CountAsync() > 0 ? await pks.BusType.MaxAsync(bs => bs.idBusType) + 1 : 1;
+                int idBusType = await pks.BusType.CountAsync() > 0 ? await pks.BusType.MaxAsync(bt => bt.idBusType) + 1 : 1;
                 var busType = new BusType()
                 {
                     idBusType = idBusType,
