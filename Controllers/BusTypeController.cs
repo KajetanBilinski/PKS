@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+
 using Microsoft.EntityFrameworkCore;
 using PKS.Models.DBModels;
 using PKS.Models.DTO.BusSchema;
@@ -35,6 +36,7 @@ namespace PKS.Controllers
             }
             return Ok(busTypes);
         }
+
         [HttpGet("{idBusType}")]
         public async Task<IActionResult> GetBusTypeById(int idBusType)
         {
