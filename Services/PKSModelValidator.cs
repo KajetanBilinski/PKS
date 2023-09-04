@@ -4,6 +4,7 @@ using PKS.Models.DTO.BusSchema;
 using PKS.Models.DTO.BusType;
 using PKS.Models.DTO.Discount;
 using PKS.Models.DTO.Passenger;
+using PKS.Models.DTO.Route;
 
 namespace PKS.Services
 {
@@ -79,6 +80,19 @@ namespace PKS.Services
                 return "Phone number cannot contain letter";
             else if (passenger.Email.Contains("@"))
                 return "Email doesn't have @";
+            return null;
+        }
+
+        public string? ValidateRouteAddDTO(RouteAddDTO route)
+        {
+            if (route is null)
+                return "Route is null";
+            else if (route.Cost < 0)
+                return "Route cost cannot be less than zero";
+            else if (route.Distance <= 0)
+                return "Route distance cannot be less or equal to zero";
+            else if (string.IsNullOrEmpty(route.RouteName))
+                return "Route name cannot be null or empty";
             return null;
         }
     }
