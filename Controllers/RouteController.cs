@@ -2,8 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using PKS.Models.DBModels;
 using PKS.Models.DTO.Discount;
+using PKS.Models.DTO.Passenger;
 using PKS.Models.DTO.Route;
 using PKS.Models.DTO.Stop;
+using PKS.Services;
+using System.ComponentModel.DataAnnotations;
 using Route = PKS.Models.DBModels.Route;
 namespace PKS.Controllers
 {
@@ -12,9 +15,11 @@ namespace PKS.Controllers
     public class RouteController : ControllerBase
     {
         private readonly PKSContext pks;
-        public RouteController(PKSContext pks)
+        private readonly IPKSModelValidator validator;
+        public RouteController(PKSContext pks, IPKSModelValidator pKSModelValidator)
         {
             this.pks = pks;
+            this.validator = pKSModelValidator;
         }
 
         [HttpGet]
@@ -69,6 +74,83 @@ namespace PKS.Controllers
                stops= stops
             };
             return Ok(routeReturn);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddRoute(RouteAddDTO routeAdd)
+        {
+            var error = validator.ValidateRouteAddDTO(routeAdd);
+            if (error != null)
+            {
+                return BadRequest(error);
+            }
+            else
+            {
+                int idRoute = await pks.Route.CountAsync() > 0 ? await pks.Route.MaxAsync(r => r.idRoute) + 1 : 1;
+                var route = new Route()
+                {
+                    idRoute = idRoute,
+                    RouteName = routeAdd.RouteName,
+                    Distance = routeAdd.Distance,
+                    Cost = routeAdd.Cost
+                };
+                await pks.Route.AddAsync(route);
+                if (await pks.SaveChangesAsync() <= 0)
+                    return StatusCode(505);
+                else
+                    return Ok("Route added");
+            }
+        }
+
+        [HttpDelete("{idRoute}")]
+        public async Task<IActionResult> DeleteRoute(int idRoute)
+        {
+            if (!await pks.Route.AnyAsync(r => r.idRoute == idRoute))
+            {
+                return BadRequest($"Route with id: {idRoute} doesn't exist");
+            }
+            else if (await pks.Ticket.AnyAsync(b => b.idRoute == idRoute))
+            {
+                return BadRequest($"Cannot remove Route due to connection with one or more tickets");
+            }
+            else if (await pks.RouteStop.AnyAsync(b => b.idRoute == idRoute))
+            {
+                return BadRequest($"Cannot remove Route due to connection with one or more route stops");
+            }
+            else
+            {
+                var route = await pks.Route.FirstOrDefaultAsync(r => r.idRoute == idRoute);
+                pks.Route.Remove(route);
+                if (await pks.SaveChangesAsync() <= 0)
+                    return StatusCode(505);
+                else
+                    return Ok($"Route with id: {idRoute} was deleted");
+            }
+        }
+
+        [HttpPut("{idRoute}")]
+        public async Task<IActionResult> UpdateRoute(int idRoute, RouteAddDTO routeUpdate)
+        {
+            var error = validator.ValidateRouteAddDTO(routeUpdate);
+            if (error != null)
+            {
+                return BadRequest(error);
+            }
+            else if (!await pks.Route.AnyAsync(r => r.idRoute == idRoute))
+            {
+                return BadRequest($"Route with id: {idRoute} doesn't exist");
+            }
+            else
+            {
+                var route = await pks.Route.FirstOrDefaultAsync(r => r.idRoute == idRoute);
+                route.RouteName = routeUpdate.RouteName;
+                route.Distance = routeUpdate.Distance;
+                route.Cost = routeUpdate.Cost;
+                if (await pks.SaveChangesAsync() <= 0)
+                    return StatusCode(505);
+                else
+                    return Ok("Route updated");
+            }
         }
     }
 }
