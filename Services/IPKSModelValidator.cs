@@ -6,6 +6,7 @@ using PKS.Models.DTO.BusType;
 using PKS.Models.DTO.Discount;
 using PKS.Models.DTO.Passenger;
 using PKS.Models.DTO.Route;
+using PKS.Models.DTO.RouteStop;
 using PKS.Models.DTO.Stop;
 using PKS.Models.DTO.Ticket;
 
@@ -21,5 +22,6 @@ namespace PKS.Services
         public string? ValidateRouteAddDTO(RouteAddDTO route);
         public string? ValidateStopAddDTO(StopAddDTO stopAdd);
         public string? ValidateTicketAddDTO(TicketAddDTO routeAdd);
+        public string? ValidateRouteStopAddDTO(RouteStopAddDTO routeStopAdd);
     }
 }

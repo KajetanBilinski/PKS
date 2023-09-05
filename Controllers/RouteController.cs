@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using PKS.Models.DBModels;
 using PKS.Models.DTO.Discount;
 using PKS.Models.DTO.Passenger;
 using PKS.Models.DTO.Route;
+using PKS.Models.DTO.RouteStop;
 using PKS.Models.DTO.Stop;
 using PKS.Services;
 using System.ComponentModel.DataAnnotations;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using Route = PKS.Models.DBModels.Route;
 namespace PKS.Controllers
 {
@@ -150,6 +153,41 @@ namespace PKS.Controllers
                     return StatusCode(505);
                 else
                     return Ok("Route updated");
+            }
+        }
+
+        [HttpPost("{idRoute}/{idStop}")]
+        public async Task<IActionResult> AddStopToRoute(int idRoute,int idStop,RouteStopAddDTO routeStopAdd)
+        {
+            var error = validator.ValidateRouteStopAddDTO(routeStopAdd);
+            if (error != null)
+            {
+                return BadRequest(error);
+            }
+            else if (!await pks.Route.AnyAsync(r => r.idRoute == idRoute))
+            {
+                return BadRequest($"Route with id: {idRoute} doesn't exist");
+            }
+            else if(!await pks.Stop.AnyAsync(s => s.idStop == idStop))
+            {
+                return BadRequest($"Stop with id: {idStop} doesn't exist");
+            }
+            else
+            {
+                int idRouteStop = await pks.RouteStop.CountAsync() > 0 ? await pks.RouteStop.MaxAsync(rs => rs.idRouteStop) + 1 : 1;
+                var routeStop = new RouteStop()
+                {
+                    idRouteStop= idRouteStop,
+                    idRoute = idRoute,
+                    idStop = idStop,
+                    ArriveTime = routeStopAdd.ArriveTime,
+                    DepartueTime = routeStopAdd.DepartueTime
+                };
+                await pks.RouteStop.AddAsync(routeStop);
+                if (await pks.SaveChangesAsync() <= 0)
+                    return StatusCode(505);
+                else
+                    return Ok("Stop added to route");
             }
         }
     }
