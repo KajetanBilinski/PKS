@@ -1,6 +1,6 @@
 # PKS-ASP.NET-Core-DF
 
-It is an application that enables service of PKS lines (Car Transport Company) . It is a tool designed to effectively manage various aspects of the transport business, including vehicles, seating patterns, passengers, seat tickets, coach routes and stations in between.
+An application that enables service of PKS lines (Car Transport Company) . It is a tool designed to effectively manage various aspects of the transport business, including vehicles, seating patterns, passengers, seat tickets, coach routes and stations in between.
 
 
 ## Features
