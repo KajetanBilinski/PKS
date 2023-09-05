@@ -43,17 +43,17 @@ namespace PKS.Controllers
             return Ok(tickets);
         }
 
-        [HttpGet("{ticketId}")]
-        public async Task<IActionResult> GetTicketById(int ticketId)
+        [HttpGet("{idTicket}")]
+        public async Task<IActionResult> GetTicketById(int idTicket)
         {
-            if (ticketId < 0)
+            if (idTicket < 0)
             {
                 return BadRequest("Ticket id cannot be less than 0");
             }
-            var ticket = await pks.Ticket.FirstOrDefaultAsync(b => b.idTicket == ticketId);
+            var ticket = await pks.Ticket.FirstOrDefaultAsync(b => b.idTicket == idTicket);
             if (ticket is null)
             {
-                return NotFound($"Ticket with id: {ticketId} does not exists");
+                return NotFound($"Ticket with id: {idTicket} does not exists");
             }
             var ticketReturn = new TicketSelectDTO()
             {

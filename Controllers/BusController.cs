@@ -21,11 +21,6 @@ namespace PKS.Controllers
             this.pks = pks;
             this.validator = pKSModelValidator;
         }
-        [HttpPost("/image")]
-        public async Task<IActionResult> SendImage(IFormFile file)
-        {
-            return Ok(file.FileName);
-        }
 
         [HttpGet]
         public async Task<IActionResult> GetBuses()

@@ -33,17 +33,17 @@ namespace PKS.Controllers
             return Ok(discounts);
         }
 
-        [HttpGet("{discountId}")]
-        public async Task<IActionResult> GetDiscountById(int discountId)
+        [HttpGet("{idDiscount}")]
+        public async Task<IActionResult> GetDiscountById(int idDiscount)
         {
-            if (discountId < 0)
+            if (idDiscount < 0)
             {
                 return BadRequest("Discount id cannot be less than 0");
             }
-            var discount = await pks.Discount.FirstOrDefaultAsync(b => b.IdDiscount == discountId);
+            var discount = await pks.Discount.FirstOrDefaultAsync(b => b.IdDiscount == idDiscount);
             if (discount is null)
             {
-                return NotFound($"Discount with id: {discountId} does not exists");
+                return NotFound($"Discount with id: {idDiscount} does not exists");
             }
             var discountReturn = new DiscountSelectDTO()
             {

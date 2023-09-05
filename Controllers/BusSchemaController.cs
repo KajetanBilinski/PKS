@@ -34,17 +34,17 @@ namespace PKS.Controllers
             return Ok(busSchemas);
         }
 
-        [HttpGet("{schemaId}")]
-        public async Task<IActionResult> GetBusSchemaById(int schemaId)
+        [HttpGet("{idBusSchema}")]
+        public async Task<IActionResult> GetBusSchemaById(int idBusSchema)
         {
-            if (schemaId < 0)
+            if (idBusSchema < 0)
             {
                 return BadRequest("Schema id cannot be less than 0");
             }
-            var schema = await pks.BusSchema.FirstOrDefaultAsync(b => b.idBusSchema == schemaId);
+            var schema = await pks.BusSchema.FirstOrDefaultAsync(b => b.idBusSchema == idBusSchema);
             if (schema is null)
             {
-                return NotFound($"Schema with id: {schemaId} does not exists");
+                return NotFound($"Schema with id: {idBusSchema} does not exists");
             }
             var schemaReturn = new BusSchemaSelectDTO()
             {
