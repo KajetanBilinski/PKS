@@ -7,6 +7,7 @@ using PKS.Models.DTO.Discount;
 using PKS.Models.DTO.Passenger;
 using PKS.Models.DTO.Route;
 using PKS.Models.DTO.Stop;
+using PKS.Models.DTO.Ticket;
 
 namespace PKS.Services
 {
@@ -19,6 +20,6 @@ namespace PKS.Services
         public string? ValidatePassengerAddDTO(PassengerAddDTO passenger);
         public string? ValidateRouteAddDTO(RouteAddDTO route);
         public string? ValidateStopAddDTO(StopAddDTO stopAdd);
-        public string? ValidateTicketAddDTO(object routeAdd);
+        public string? ValidateTicketAddDTO(TicketAddDTO routeAdd);
     }
 }
