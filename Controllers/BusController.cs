@@ -21,12 +21,17 @@ namespace PKS.Controllers
             this.pks = pks;
             this.validator = pKSModelValidator;
         }
+        [HttpPost("/image")]
+        public async Task<IActionResult> SendImage(IFormFile file)
+        {
+            return Ok(file.FileName);
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetBuses()
         {
             List<BusSelectDTO> buses = new List<BusSelectDTO>();
-            foreach(Bus bus in await pks.Bus.ToListAsync())
+            foreach (Bus bus in await pks.Bus.ToListAsync())
             {
                 buses.Add(new BusSelectDTO()
                 {
