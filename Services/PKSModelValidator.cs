@@ -1,10 +1,13 @@
-﻿using PKS.Models.DBModels;
+﻿using Microsoft.AspNetCore.Routing;
+using PKS.Models.DBModels;
 using PKS.Models.DTO.Bus;
 using PKS.Models.DTO.BusSchema;
 using PKS.Models.DTO.BusType;
 using PKS.Models.DTO.Discount;
 using PKS.Models.DTO.Passenger;
 using PKS.Models.DTO.Route;
+using PKS.Models.DTO.Stop;
+using PKS.Models.DTO.Ticket;
 
 namespace PKS.Services
 {
@@ -93,6 +96,30 @@ namespace PKS.Services
                 return "Route distance cannot be less or equal to zero";
             else if (string.IsNullOrEmpty(route.RouteName))
                 return "Route name cannot be null or empty";
+            return null;
+        }
+
+        public string? ValidateStopAddDTO(StopAddDTO stop)
+        {
+            if (stop is null)
+                return "Stop is null";
+            else if (string.IsNullOrEmpty(stop.StopName))
+                return "Stop name cannot be null or empty";
+            return null;
+        }
+
+        public string? ValidateTicketAddDTO(TicketAddDTO ticket)
+        {
+            if (ticket is null)
+                return "Stop is null";
+            else if(string.IsNullOrEmpty(ticket.RouteName))
+                return "Route name cannot be null or empty";
+            else if (string.IsNullOrEmpty(ticket.SeatNumber))
+                return "Seat number cannot be null or empty";
+            else if (ticket.Cost<0)
+                return "Ticket cost cannot be less than zero";
+            else if (ticket.Distance <= 0)
+                return "Ticket distance cannot be less or equal to zero";
             return null;
         }
     }

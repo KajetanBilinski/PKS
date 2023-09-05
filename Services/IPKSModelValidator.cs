@@ -19,5 +19,6 @@ namespace PKS.Services
         public string? ValidatePassengerAddDTO(PassengerAddDTO passenger);
         public string? ValidateRouteAddDTO(RouteAddDTO route);
         public string? ValidateStopAddDTO(StopAddDTO stopAdd);
+        public string? ValidateTicketAddDTO(object routeAdd);
     }
 }
