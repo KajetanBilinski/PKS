@@ -11,6 +11,8 @@ It is an application that enables service of PKS lines (Car Transport Company) .
 - Coach Courses - The application allows you to create and plan various bus courses, including setting timetables, stops and routes.
 - Stop Stations - The database contains information about stop stations, including their location, facilities and available services.
 
+## Entity-Relationship Diagram
+![alt text]([http://url/to/img.png](https://user-images.githubusercontent.com/75189414/265999488-83fc3e02-c9e0-4393-b3bb-32de20aedc7e.png))
 
 ## API Reference
 
