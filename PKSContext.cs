@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using PKS.Configurations;
 using PKS.Models.DBModels;
 using Route = PKS.Models.DBModels.Route;
@@ -20,7 +19,7 @@ public class PKSContext : DbContext
     public PKSContext(DbContextOptions opt)
         : base(opt)
     {
-        
+
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

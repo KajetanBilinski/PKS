@@ -1,6 +1,4 @@
-﻿using PKS.Models.DTO.Ticket;
-
-namespace PKS.Models.DTO.Passenger
+﻿namespace PKS.Models.DTO.Passenger
 {
     public class PassengerAddDTO
     {

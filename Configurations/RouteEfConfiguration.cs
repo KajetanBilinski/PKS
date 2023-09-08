@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PKS.Models.DBModels;
 using Route = PKS.Models.DBModels.Route;
 
 namespace PKS.Configurations

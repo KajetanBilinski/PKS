@@ -12,17 +12,17 @@ namespace PKS.Controllers
     {
         private readonly PKSContext pks;
         private readonly IPKSModelValidator validator;
-        public DiscountController(PKSContext pks,IPKSModelValidator pKSModelValidator)
+        public DiscountController(PKSContext pks, IPKSModelValidator pKSModelValidator)
         {
             this.pks = pks;
             this.validator = pKSModelValidator;
         }
-
+        #region GET
         [HttpGet]
         public async Task<IActionResult> GetDiscounts()
         {
             List<DiscountSelectDTO> discounts = new List<DiscountSelectDTO>();
-            foreach(var d in await pks.Discount.ToListAsync())
+            foreach (var d in await pks.Discount.ToListAsync())
             {
                 discounts.Add(new DiscountSelectDTO()
                 {
@@ -47,12 +47,13 @@ namespace PKS.Controllers
             }
             var discountReturn = new DiscountSelectDTO()
             {
-                DiscountValue= discount.DiscountValue,
+                DiscountValue = discount.DiscountValue,
                 Name = discount.Name,
             };
             return Ok(discountReturn);
         }
-
+        #endregion
+        #region POST
         [HttpPost]
         public async Task<IActionResult> AddDiscount(DiscountAddDTO discountAdd)
         {
@@ -71,7 +72,7 @@ namespace PKS.Controllers
                 var discount = new Discount()
                 {
                     IdDiscount = idDiscount,
-                    DiscountValue= discountAdd.DiscountValue,
+                    DiscountValue = discountAdd.DiscountValue,
                     Name = discountAdd.Name
                 };
                 await pks.Discount.AddAsync(discount);
@@ -82,9 +83,10 @@ namespace PKS.Controllers
             }
 
         }
-
+        #endregion
+        #region PUT
         [HttpPut("{idDiscount}")]
-        public async Task<IActionResult> UpdateDiscount(int idDiscount,DiscountAddDTO discountUpdate)
+        public async Task<IActionResult> UpdateDiscount(int idDiscount, DiscountAddDTO discountUpdate)
         {
             var error = validator.ValidateDiscountAddDTO(discountUpdate);
             if (error != null)
@@ -98,15 +100,16 @@ namespace PKS.Controllers
             else
             {
                 var discount = await pks.Discount.FirstOrDefaultAsync(d => d.IdDiscount == idDiscount);
-                discount.DiscountValue=discountUpdate.DiscountValue;
-                discount.Name=discountUpdate.Name;
+                discount.DiscountValue = discountUpdate.DiscountValue;
+                discount.Name = discountUpdate.Name;
                 if (await pks.SaveChangesAsync() <= 0)
                     return StatusCode(505);
                 else
                     return Ok("Discount updated");
             }
         }
-
+        #endregion
+        #region DELETE
         [HttpDelete("{idDiscount}")]
         public async Task<IActionResult> DeleteDiscount(int idDiscount)
         {
@@ -128,5 +131,13 @@ namespace PKS.Controllers
                     return Ok($"Discount with id: {idDiscount} was deleted");
             }
         }
+        #endregion
+
+
+
+
+
+
+
     }
 }

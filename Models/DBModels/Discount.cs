@@ -6,6 +6,6 @@
         public decimal DiscountValue { get; set; }
         public string Name { get; set; }
 
-        public virtual ICollection<Ticket> NavigationTickets { get; set;}
+        public virtual ICollection<Ticket> NavigationTickets { get; set; }
     }
 }

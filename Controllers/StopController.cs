@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PKS.Models.DBModels;
-using PKS.Models.DTO.Discount;
-using PKS.Models.DTO.Route;
 using PKS.Models.DTO.Stop;
 using PKS.Services;
-using System.ComponentModel.DataAnnotations;
 
 namespace PKS.Controllers
 {
@@ -20,11 +17,13 @@ namespace PKS.Controllers
             this.pks = pks;
             this.validator = pKSModelValidator;
         }
+
+        #region GET
         [HttpGet]
         public async Task<IActionResult> GetStops()
         {
             List<StopSelectDTO> stops = new List<StopSelectDTO>();
-            foreach(var s in await pks.Stop.ToListAsync())
+            foreach (var s in await pks.Stop.ToListAsync())
             {
                 stops.Add(new StopSelectDTO
                 {
@@ -48,11 +47,12 @@ namespace PKS.Controllers
             }
             var stopReturn = new StopSelectDTO()
             {
-                StopName= stop.StopName
+                StopName = stop.StopName
             };
             return Ok(stopReturn);
         }
-
+        #endregion
+        #region POST
         [HttpPost]
         public async Task<IActionResult> AddStop(StopAddDTO stopAdd)
         {
@@ -66,8 +66,8 @@ namespace PKS.Controllers
                 int idStop = await pks.Stop.CountAsync() > 0 ? await pks.Stop.MaxAsync(s => s.idStop) + 1 : 1;
                 var stop = new Stop()
                 {
-                    idStop= idStop,
-                    StopName= stopAdd.StopName
+                    idStop = idStop,
+                    StopName = stopAdd.StopName
                 };
                 await pks.Stop.AddAsync(stop);
                 if (await pks.SaveChangesAsync() <= 0)
@@ -77,28 +77,8 @@ namespace PKS.Controllers
             }
         }
 
-        [HttpDelete("{idStop}")]
-        public async Task<IActionResult> DeleteStop(int idStop)
-        {
-            if (!await pks.Route.AnyAsync(r => r.idRoute == idStop))
-            {
-                return BadRequest($"Stop with id: {idStop} doesn't exist");
-            }
-            else if (await pks.RouteStop.AnyAsync(rs => rs.idStop == idStop))
-            {
-                return BadRequest($"Cannot remove Stop due to connection with one or more tickets");
-            }
-            else
-            {
-                var stop = await pks.Stop.FirstOrDefaultAsync(s => s.idStop == idStop);
-                pks.Stop.Remove(stop);
-                if (await pks.SaveChangesAsync() <= 0)
-                    return StatusCode(505);
-                else
-                    return Ok($"Stop with id: {idStop} was deleted");
-            }
-        }
-
+        #endregion
+        #region PUT
         [HttpPut("{idStop}")]
         public async Task<IActionResult> UpdateStop(int idStop, StopAddDTO stopUpdate)
         {
@@ -121,5 +101,35 @@ namespace PKS.Controllers
                     return Ok("Stop updated");
             }
         }
+        #endregion
+        #region DELETE
+        [HttpDelete("{idStop}")]
+        public async Task<IActionResult> DeleteStop(int idStop)
+        {
+            if (!await pks.Route.AnyAsync(r => r.idRoute == idStop))
+            {
+                return BadRequest($"Stop with id: {idStop} doesn't exist");
+            }
+            else if (await pks.RouteStop.AnyAsync(rs => rs.idStop == idStop))
+            {
+                return BadRequest($"Cannot remove Stop due to connection with one or more tickets");
+            }
+            else
+            {
+                var stop = await pks.Stop.FirstOrDefaultAsync(s => s.idStop == idStop);
+                pks.Stop.Remove(stop);
+                if (await pks.SaveChangesAsync() <= 0)
+                    return StatusCode(505);
+                else
+                    return Ok($"Stop with id: {idStop} was deleted");
+            }
+        }
+        #endregion
+
+
+
+
+
+
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PKS.Models.DBModels;
-using PKS.Models.DTO.Discount;
 using PKS.Models.DTO.Passenger;
 using PKS.Models.DTO.Ticket;
 using PKS.Services;
@@ -19,8 +18,7 @@ namespace PKS.Controllers
             this.pks = pks;
             this.validator = pKSModelValidator;
         }
-
-
+        #region GET
         [HttpGet]
         public async Task<IActionResult> GetPassengers()
         {
@@ -80,7 +78,8 @@ namespace PKS.Controllers
             };
             return Ok(passengerReturn);
         }
-
+        #endregion
+        #region POST
         [HttpPost]
         public async Task<IActionResult> AddPassenger(PassengerAddDTO passengerAdd)
         {
@@ -113,29 +112,8 @@ namespace PKS.Controllers
                     return Ok("Passenger added");
             }
         }
-
-        [HttpDelete("{idPassenger}")]
-        public async Task<IActionResult> DeletePassenger(int idPassenger)
-        {
-            if (!await pks.Passenger.AnyAsync(d => d.idPassenger == idPassenger))
-            {
-                return BadRequest($"Passenger with id: {idPassenger} doesn't exist");
-            }
-            else if (await pks.Ticket.AnyAsync(b => b.idPassenger == idPassenger))
-            {
-                return BadRequest($"Cannot remove Passenger due to connection with one or more tickets");
-            }
-            else
-            {
-                var passenger = await pks.Passenger.FirstOrDefaultAsync(bs => bs.idPassenger == idPassenger);
-                pks.Passenger.Remove(passenger);
-                if (await pks.SaveChangesAsync() <= 0)
-                    return StatusCode(505);
-                else
-                    return Ok($"Passenger with id: {idPassenger} was deleted");
-            }
-        }
-
+        #endregion
+        #region PUT
         [HttpPut("{idPassenger}")]
         public async Task<IActionResult> UpdatePassenger(int idPassenger, PassengerAddDTO passengerUpdate)
         {
@@ -162,5 +140,36 @@ namespace PKS.Controllers
                     return Ok("Passenger updated");
             }
         }
+        #endregion
+        #region DELETE
+        [HttpDelete("{idPassenger}")]
+        public async Task<IActionResult> DeletePassenger(int idPassenger)
+        {
+            if (!await pks.Passenger.AnyAsync(d => d.idPassenger == idPassenger))
+            {
+                return BadRequest($"Passenger with id: {idPassenger} doesn't exist");
+            }
+            else if (await pks.Ticket.AnyAsync(b => b.idPassenger == idPassenger))
+            {
+                return BadRequest($"Cannot remove Passenger due to connection with one or more tickets");
+            }
+            else
+            {
+                var passenger = await pks.Passenger.FirstOrDefaultAsync(bs => bs.idPassenger == idPassenger);
+                pks.Passenger.Remove(passenger);
+                if (await pks.SaveChangesAsync() <= 0)
+                    return StatusCode(505);
+                else
+                    return Ok($"Passenger with id: {idPassenger} was deleted");
+            }
+        }
+
+        #endregion
+
+
+
+
+
+
     }
 }

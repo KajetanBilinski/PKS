@@ -102,7 +102,7 @@ namespace PKS.Services
         {
             if (routeStopAdd is null)
                 return "RouteStop is null";
-            else if (routeStopAdd.ArriveTime>routeStopAdd.DepartueTime)
+            else if (routeStopAdd.ArriveTime > routeStopAdd.DepartueTime)
                 return "Arrive time cannot be after departure time";
             return null;
         }
@@ -120,11 +120,11 @@ namespace PKS.Services
         {
             if (ticket is null)
                 return "Stop is null";
-            else if(string.IsNullOrEmpty(ticket.RouteName))
+            else if (string.IsNullOrEmpty(ticket.RouteName))
                 return "Route name cannot be null or empty";
             else if (string.IsNullOrEmpty(ticket.SeatNumber))
                 return "Seat number cannot be null or empty";
-            else if (ticket.Cost<0)
+            else if (ticket.Cost < 0)
                 return "Ticket cost cannot be less than zero";
             else if (ticket.Distance <= 0)
                 return "Ticket distance cannot be less or equal to zero";

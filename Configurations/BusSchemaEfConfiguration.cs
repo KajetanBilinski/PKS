@@ -10,7 +10,7 @@ namespace PKS.Configurations
         {
             builder.HasKey(e => e.idBusSchema).HasName("BusSchema_pk");
             builder.Property(e => e.Filename).HasColumnType("string");
-                
+
         }
     }
 }

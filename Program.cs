@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Routing;
 using PKS;
 using PKS.Services;
 
@@ -14,7 +13,7 @@ public class Program
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSingleton<IPKSModelValidator,PKSModelValidator>();
+        builder.Services.AddSingleton<IPKSModelValidator, PKSModelValidator>();
         builder.Services.AddSwaggerGen();
 
         builder.Services.AddDbContext<PKSContext>(options =>
@@ -22,9 +21,9 @@ public class Program
             options.UseLazyLoadingProxies();
             options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
         });
-        
+
         var app = builder.Build();
-        
+
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())

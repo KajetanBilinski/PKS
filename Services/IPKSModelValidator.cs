@@ -1,6 +1,4 @@
-﻿using PKS.Controllers;
-using PKS.Models.DBModels;
-using PKS.Models.DTO.Bus;
+﻿using PKS.Models.DTO.Bus;
 using PKS.Models.DTO.BusSchema;
 using PKS.Models.DTO.BusType;
 using PKS.Models.DTO.Discount;

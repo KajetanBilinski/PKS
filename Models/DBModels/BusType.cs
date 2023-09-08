@@ -1,11 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-
-namespace PKS.Models.DBModels;
+﻿namespace PKS.Models.DBModels;
 
 public class BusType
 {
-    public BusType() 
+    public BusType()
     {
         NavigationBuses = new HashSet<Bus>();
     }
@@ -14,6 +11,6 @@ public class BusType
     public string Version { get; set; }
     public string Engine { get; set; }
     public int Year { get; set; }
-   
+
     public virtual ICollection<Bus> NavigationBuses { get; set; }
 }

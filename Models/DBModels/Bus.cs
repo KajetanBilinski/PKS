@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace PKS.Models.DBModels
+﻿namespace PKS.Models.DBModels
 {
     public class Bus
     {
@@ -10,9 +8,9 @@ namespace PKS.Models.DBModels
         public int idBusType { get; set; }
         public int idBusSchema { get; set; }
 
-        public virtual BusSchema NavigationBusSchema { get; set; }  
+        public virtual BusSchema NavigationBusSchema { get; set; }
         public virtual BusType NavigationBusType { get; set; }
-     
+
         public virtual ICollection<Ticket> NavigationTickets { get; set; }
 
     }

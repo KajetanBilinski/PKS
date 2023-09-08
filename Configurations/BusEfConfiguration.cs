@@ -9,8 +9,8 @@ namespace PKS.Configurations
         public void Configure(EntityTypeBuilder<Bus> builder)
         {
             builder.HasKey(e => e.idBus).HasName("Bus_pk");
-            builder.Property(e=>e.Capacity).HasColumnType("integer");
-            builder.Property(e=>e.Registration).HasColumnType("string");
+            builder.Property(e => e.Capacity).HasColumnType("integer");
+            builder.Property(e => e.Registration).HasColumnType("string");
             builder.HasOne(e => e.NavigationBusType)
                 .WithMany(e => e.NavigationBuses)
                 .HasForeignKey(e => e.idBusType);

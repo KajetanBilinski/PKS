@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PKS.Models.DBModels;
 using PKS.Models.DTO.Bus;
 using PKS.Models.DTO.BusSchema;
 using PKS.Models.DTO.BusType;
-using PKS.Models.DTO.Ticket;
 using PKS.Services;
 
 namespace PKS.Controllers
@@ -16,12 +14,12 @@ namespace PKS.Controllers
     {
         private readonly PKSContext pks;
         private readonly IPKSModelValidator validator;
-        public BusController(PKSContext pks,IPKSModelValidator pKSModelValidator)
+        public BusController(PKSContext pks, IPKSModelValidator pKSModelValidator)
         {
             this.pks = pks;
             this.validator = pKSModelValidator;
         }
-
+        #region GET
         [HttpGet]
         public async Task<IActionResult> GetBuses()
         {
@@ -50,12 +48,12 @@ namespace PKS.Controllers
         [HttpGet("{idBus}")]
         public async Task<IActionResult> GetBusById(int idBus)
         {
-            if(idBus < 0)
+            if (idBus < 0)
             {
                 return BadRequest("Bus id cannot be less than 0");
             }
-            var bus = await pks.Bus.FirstOrDefaultAsync(b=>b.idBus== idBus);
-            if(bus is null)
+            var bus = await pks.Bus.FirstOrDefaultAsync(b => b.idBus == idBus);
+            if (bus is null)
             {
                 return NotFound($"Bus with id: {idBus} does not exists");
             }
@@ -77,6 +75,8 @@ namespace PKS.Controllers
             };
             return Ok(busReturn);
         }
+        #endregion
+        #region POST
         [HttpPost]
         public async Task<IActionResult> AddBus(BusAddDTO busAdd)
         {
@@ -85,7 +85,7 @@ namespace PKS.Controllers
             {
                 return BadRequest(error);
             }
-            else if(await pks.Bus.AnyAsync(b=>b.Registration == busAdd.Registration))
+            else if (await pks.Bus.AnyAsync(b => b.Registration == busAdd.Registration))
             {
                 return BadRequest($"Bus with this registration {busAdd.Registration} already exists");
             }
@@ -94,10 +94,10 @@ namespace PKS.Controllers
                 bool addedBusType = false;
                 bool addedBusSchema = false;
                 BusType busType = await pks.BusType.FirstOrDefaultAsync(bt =>
-                busAdd.Type.Engine == bt.Engine &&
-                busAdd.Type.Year == bt.Year &&
-                busAdd.Type.Version == bt.Version &&
-                busAdd.Type.Made == bt.Made);
+                busAdd.Type.Engine! == bt.Engine &&
+                busAdd.Type.Year! == bt.Year &&
+                busAdd.Type.Version! == bt.Version &&
+                busAdd.Type.Made! == bt.Made);
 
                 if (busType is null)
                 {
@@ -115,9 +115,9 @@ namespace PKS.Controllers
                         return StatusCode(505);
                     addedBusType = true;
                 }
-                
+
                 BusSchema busSchema = await pks.BusSchema.FirstOrDefaultAsync(bs => bs.Filename == busAdd.Schema.Filename);
-                if(busSchema is null)
+                if (busSchema is null)
                 {
                     int idBusSchema = await pks.BusSchema.CountAsync() > 0 ? await pks.BusSchema.MaxAsync(bs => bs.idBusSchema) + 1 : 1;
                     busSchema = new BusSchema()
@@ -143,10 +143,11 @@ namespace PKS.Controllers
                 if (await pks.SaveChangesAsync() <= 0)
                     return StatusCode(505);
                 else
-                    return Ok("Bus added "+(addedBusSchema ? ", BusSchema added ":"")+(addedBusType?", BusType added":""));
+                    return Ok("Bus added " + (addedBusSchema ? ", BusSchema added " : "") + (addedBusType ? ", BusType added" : ""));
             }
         }
-
+        #endregion
+        #region PUT
         [HttpPut]
         public async Task<IActionResult> UpdateBus(BusAddDTO busAdd)
         {
@@ -212,18 +213,19 @@ namespace PKS.Controllers
                     return Ok("Bus updated " + (addedBusSchema ? ", BusSchema added " : "") + (addedBusType ? ", BusType added" : ""));
             }
         }
-
+        #endregion
+        #region DELETE
         [HttpDelete]
         public async Task<IActionResult> DeleteBus(string registration)
         {
-            if(string.IsNullOrWhiteSpace(registration))
+            if (string.IsNullOrWhiteSpace(registration))
             {
                 return BadRequest("Registration is null or empty");
             }
             else
             {
-                var bus = await pks.Bus.FirstOrDefaultAsync(b=>b.Registration == registration);
-                if(bus is null)
+                var bus = await pks.Bus.FirstOrDefaultAsync(b => b.Registration == registration);
+                if (bus is null)
                 {
                     return NotFound($"Bus with registration: {registration} doesn't exist");
                 }
@@ -237,5 +239,9 @@ namespace PKS.Controllers
                 }
             }
         }
+        #endregion
+
+
+
     }
 }

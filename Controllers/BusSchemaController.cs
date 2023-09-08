@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PKS.Models.DBModels;
-using PKS.Models.DTO.Bus;
 using PKS.Models.DTO.BusSchema;
-using PKS.Models.DTO.BusType;
 using PKS.Services;
 
 namespace PKS.Controllers
@@ -19,12 +17,12 @@ namespace PKS.Controllers
             this.pks = pks;
             this.validator = pKSModelValidator;
         }
-
+        #region GET
         [HttpGet]
         public async Task<IActionResult> GetBusSchemas()
         {
             List<BusSchemaSelectDTO> busSchemas = new List<BusSchemaSelectDTO>();
-            foreach(BusSchema busSchema in await pks.BusSchema.ToListAsync())
+            foreach (BusSchema busSchema in await pks.BusSchema.ToListAsync())
             {
                 busSchemas.Add(new BusSchemaSelectDTO()
                 {
@@ -48,11 +46,12 @@ namespace PKS.Controllers
             }
             var schemaReturn = new BusSchemaSelectDTO()
             {
-                Filename= schema.Filename,
+                Filename = schema.Filename,
             };
             return Ok(schemaReturn);
         }
-
+        #endregion
+        #region POST
         [HttpPost]
         public async Task<IActionResult> AddBusSchema(BusSchemaAddDTO busSchemaAdd)
         {
@@ -61,7 +60,7 @@ namespace PKS.Controllers
             {
                 return BadRequest(error);
             }
-            else if(await pks.BusSchema.AnyAsync(bs=>bs.Filename==busSchemaAdd.Filename))
+            else if (await pks.BusSchema.AnyAsync(bs => bs.Filename == busSchemaAdd.Filename))
             {
                 return BadRequest($"BusSchema with filename: {busSchemaAdd.Filename} already exist");
             }
@@ -80,9 +79,12 @@ namespace PKS.Controllers
                     return Ok("BusSchema added");
             }
         }
+        #endregion
+        #region PUT
+
 
         [HttpPut("{idBusSchema}")]
-        public async Task<IActionResult> UpdateBusSchema(int idBusSchema,BusSchemaAddDTO busSchemaUpdate)
+        public async Task<IActionResult> UpdateBusSchema(int idBusSchema, BusSchemaAddDTO busSchemaUpdate)
         {
             var error = validator.ValidateBusSchemaAddDTO(busSchemaUpdate);
             if (error != null)
@@ -93,13 +95,13 @@ namespace PKS.Controllers
             {
                 return BadRequest($"BusSchema with id: {idBusSchema} doesn't exist");
             }
-            else if(await pks.BusSchema.AnyAsync(bs => bs.Filename == busSchemaUpdate.Filename))
+            else if (await pks.BusSchema.AnyAsync(bs => bs.Filename == busSchemaUpdate.Filename))
             {
                 return BadRequest($"BusSchema with filename: {busSchemaUpdate.Filename} already exist");
             }
             else
             {
-                var busSchema = await pks.BusSchema.FirstOrDefaultAsync(bs=>bs.idBusSchema == idBusSchema);
+                var busSchema = await pks.BusSchema.FirstOrDefaultAsync(bs => bs.idBusSchema == idBusSchema);
                 busSchema.Filename = busSchemaUpdate.Filename;
                 if (await pks.SaveChangesAsync() <= 0)
                     return StatusCode(505);
@@ -107,7 +109,8 @@ namespace PKS.Controllers
                     return Ok("BusSchema updated");
             }
         }
-
+        #endregion
+        #region DELETE
         [HttpDelete("{idBusSchema}")]
         public async Task<IActionResult> DeleteBusSchema(int idBusSchema)
         {
@@ -115,7 +118,7 @@ namespace PKS.Controllers
             {
                 return BadRequest($"BusSchema with id: {idBusSchema} doesn't exist");
             }
-            else if(await pks.Bus.AnyAsync(b=>b.idBusSchema == idBusSchema))
+            else if (await pks.Bus.AnyAsync(b => b.idBusSchema == idBusSchema))
             {
                 return BadRequest($"Cannot remove BusSchema due to connection with one or more buses");
             }
@@ -129,5 +132,6 @@ namespace PKS.Controllers
                     return Ok($"BusSchema with id: {idBusSchema} was deleted");
             }
         }
+        #endregion
     }
 }

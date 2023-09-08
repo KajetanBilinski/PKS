@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace PKS.Models.DBModels
+﻿namespace PKS.Models.DBModels
 {
     public class BusSchema
     {
@@ -10,7 +8,7 @@ namespace PKS.Models.DBModels
         }
         public int idBusSchema { get; set; }
         public string Filename { get; set; }
-      
-        public virtual ICollection<Bus> NavigationBuses { get; set;}
+
+        public virtual ICollection<Bus> NavigationBuses { get; set; }
     }
 }

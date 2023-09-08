@@ -2,7 +2,6 @@
 
 using Microsoft.EntityFrameworkCore;
 using PKS.Models.DBModels;
-using PKS.Models.DTO.BusSchema;
 using PKS.Models.DTO.BusType;
 using PKS.Services;
 
@@ -19,7 +18,7 @@ namespace PKS.Controllers
             this.pks = pks;
             this.validator = pKSModelValidator;
         }
-
+        #region GET
         [HttpGet]
         public async Task<IActionResult> GetBusTypes()
         {
@@ -29,9 +28,9 @@ namespace PKS.Controllers
                 busTypes.Add(new BusTypeSelectDTO()
                 {
                     Engine = busType.Engine,
-                    Version= busType.Version,
-                    Made= busType.Made,
-                    Year= busType.Year,
+                    Version = busType.Version,
+                    Made = busType.Made,
+                    Year = busType.Year,
                 });
             }
             return Ok(busTypes);
@@ -51,14 +50,15 @@ namespace PKS.Controllers
             }
             var typeReturn = new BusTypeSelectDTO()
             {
-                Version= type.Version,
-                Engine= type.Engine,
-                Year= type.Year,
-                Made= type.Made,
+                Version = type.Version,
+                Engine = type.Engine,
+                Year = type.Year,
+                Made = type.Made,
             };
             return Ok(typeReturn);
         }
-
+        #endregion
+        #region POST
         [HttpPost]
         public async Task<IActionResult> AddBusType(BusTypeAddDTO busTypeAdd)
         {
@@ -81,7 +81,7 @@ namespace PKS.Controllers
                     Engine = busTypeAdd.Engine,
                     Year = busTypeAdd.Year,
                     Made = busTypeAdd.Made,
-                    Version= busTypeAdd.Version
+                    Version = busTypeAdd.Version
                 };
                 await pks.BusType.AddAsync(busType);
                 if (await pks.SaveChangesAsync() <= 0)
@@ -90,7 +90,8 @@ namespace PKS.Controllers
                     return Ok("BusType added");
             }
         }
-
+        #endregion
+        #region PUT
         [HttpPut("{idBusType}")]
         public async Task<IActionResult> UpdateBusType(int idBusType, BusTypeAddDTO busTypeUpdate)
         {
@@ -116,7 +117,8 @@ namespace PKS.Controllers
                     return Ok("BusType updated");
             }
         }
-
+        #endregion
+        #region DELETE
         [HttpDelete("{idBusType}")]
         public async Task<IActionResult> DeleteBusType(int idBusType)
         {
@@ -138,5 +140,13 @@ namespace PKS.Controllers
                     return Ok($"BusType with id: {idBusType} was deleted");
             }
         }
+        #endregion
+
+
+
+
+
+
+
     }
 }
